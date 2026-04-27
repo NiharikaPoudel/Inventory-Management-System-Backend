@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using VehicleManagementSystem.Domain.Models;
-using VehicleManagementSystem.Infrastructure.Persistence;
-using VehicleManagementSystem.DTOs;
+using VehicleManagementSystem.Application.Interfaces.IServices;
+using VehicleManagementSystem.DTOs.Customer;
 
 namespace VehicleManagementSystem.Controllers
 {
@@ -9,63 +8,34 @@ namespace VehicleManagementSystem.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICustomerService _service;
 
-        public CustomerController(ApplicationDbContext context)
+        public CustomerController(ICustomerService service)
         {
-            _context = context;
+            _service = service;
         }
 
+        // POST: register customer + vehicle
         [HttpPost("register-with-vehicle")]
-        public IActionResult RegisterCustomerWithVehicle(RegisterCustomerWithVehicleDto dto)
+        public async Task<IActionResult> RegisterCustomerWithVehicle([FromBody] CreateCustomerWithVehicleDto dto)
         {
-            var customer = new Customer
-            {
-                FullName = dto.FullName,
-                Email = dto.Email,
-                Phone = dto.Phone,
-                Address = dto.Address
-            };
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            _context.Customers.Add(customer);
-            _context.SaveChanges();
+            var result = await _service.RegisterCustomerWithVehicleAsync(dto);
+            return Ok(result);
+        }
 
-            var vehicle = new Vehicle
-            {
-                VehicleNumber = dto.VehicleNumber,
-                Make = dto.Make,
-                Model = dto.Model,
-                Year = dto.Year,
-                Color = dto.Color,
-                CustomerId = customer.Id
-            };
+        // GET: customer with vehicles
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCustomerWithVehicles(int id)
+        {
+            var customer = await _service.GetCustomerWithVehiclesAsync(id);
 
-            _context.Vehicles.Add(vehicle);
-            _context.SaveChanges();
+            if (customer == null)
+                return NotFound("Customer not found");
 
-            return Ok(new
-            {
-                message = "Customer and Vehicle registered successfully",
-                customer = new
-                {
-                    customer.Id,
-                    customer.FullName,
-                    customer.Email,
-                    customer.Phone,
-                    customer.Address,
-                    customer.RegisteredAt
-                },
-                vehicle = new
-                {
-                    vehicle.Id,
-                    vehicle.VehicleNumber,
-                    vehicle.Make,
-                    vehicle.Model,
-                    vehicle.Year,
-                    vehicle.Color,
-                    vehicle.CustomerId
-                }
-            });
+            return Ok(customer);
         }
     }
 }

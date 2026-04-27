@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using VehicleManagementSystem.Domain.Models;
-using VehicleManagementSystem.Infrastructure.Persistence;
+using VehicleManagementSystem.Application.Interfaces.IServices;
+using VehicleManagementSystem.DTOs.Vendor;
 
 namespace VehicleManagementSystem.Controllers
 {
@@ -8,74 +8,63 @@ namespace VehicleManagementSystem.Controllers
     [ApiController]
     public class VendorController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IVendorService _vendorService;
 
-        public VendorController(ApplicationDbContext context)
+        public VendorController(IVendorService vendorService)
         {
-            _context = context;
+            _vendorService = vendorService;
         }
 
         [HttpPost]
-        public IActionResult CreateVendor([FromBody] Vendor vendor)
+        public async Task<IActionResult> CreateVendor([FromBody] CreateVendorDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _context.Vendors.Add(vendor);
-            _context.SaveChanges();
+            var created = await _vendorService.CreateVendorAsync(dto);
 
-            return CreatedAtAction(nameof(GetVendorById), new { id = vendor.Id }, vendor);
+            return CreatedAtAction(nameof(GetVendorById), new { id = created.Id }, created);
         }
 
         [HttpGet]
-        public IActionResult GetAllVendors()
+        public async Task<IActionResult> GetAllVendors()
         {
-            return Ok(_context.Vendors.ToList());
+            var vendors = await _vendorService.GetAllVendorsAsync();
+            return Ok(vendors);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetVendorById(int id)
+        public async Task<IActionResult> GetVendorById(int id)
         {
-            var vendor = _context.Vendors.Find(id);
+            var vendor = await _vendorService.GetVendorByIdAsync(id);
 
             if (vendor == null)
-                return NotFound();
+                return NotFound("Vendor not found");
 
             return Ok(vendor);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateVendor(int id, Vendor updatedVendor)
+        public async Task<IActionResult> UpdateVendor(int id, [FromBody] UpdateVendorDto dto)
         {
-            if (id != updatedVendor.Id)
-                return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var vendor = _context.Vendors.Find(id);
+            var updated = await _vendorService.UpdateVendorAsync(id, dto);
 
-            if (vendor == null)
-                return NotFound();
+            if (updated == null)
+                return NotFound("Vendor not found");
 
-            vendor.Name = updatedVendor.Name;
-            vendor.ContactPerson = updatedVendor.ContactPerson;
-            vendor.Email = updatedVendor.Email;
-            vendor.Phone = updatedVendor.Phone;
-            vendor.Address = updatedVendor.Address;
-
-            _context.SaveChanges();
-
-            return Ok(vendor);
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteVendor(int id)
+        public async Task<IActionResult> DeleteVendor(int id)
         {
-            var vendor = _context.Vendors.Find(id);
+            var deleted = await _vendorService.DeleteVendorAsync(id);
 
-            if (vendor == null)
-                return NotFound();
-
-            _context.Vendors.Remove(vendor);
-            _context.SaveChanges();
+            if (!deleted)
+                return NotFound("Vendor not found");
 
             return Ok("Vendor deleted successfully");
         }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using VehicleManagementSystem.Infrastructure.Persistence;
-using VehicleManagementSystem.Domain.Models;
+using VehicleManagementSystem.Application.Interfaces.IServices;
+using VehicleManagementSystem.DTOs.Staff;
 
 namespace VehicleManagementSystem.Controllers
 {
@@ -8,76 +8,65 @@ namespace VehicleManagementSystem.Controllers
     [ApiController]
     public class StaffController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IStaffService _staffService;
 
-        public StaffController(ApplicationDbContext context)
+        public StaffController(IStaffService staffService)
         {
-            _context = context;
+            _staffService = staffService;
         }
 
         [HttpPost]
-        public IActionResult CreateStaff([FromBody] Staff staff)
+        public async Task<IActionResult> CreateStaff([FromBody] CreateStaffDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _context.Staffs.Add(staff);
-            _context.SaveChanges();
+            var createdStaff = await _staffService.CreateStaffAsync(dto);
 
-            return CreatedAtAction(nameof(GetStaffById), new { id = staff.Id }, staff);
+            return CreatedAtAction(nameof(GetStaffById), new { id = createdStaff.Id }, createdStaff);
         }
 
         [HttpGet]
-        public IActionResult GetAllStaff()
+        public async Task<IActionResult> GetAllStaff()
         {
-            return Ok(_context.Staffs.ToList());
+            var staffs = await _staffService.GetAllStaffAsync();
+            return Ok(staffs);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetStaffById(int id)
+        public async Task<IActionResult> GetStaffById(int id)
         {
-            var staff = _context.Staffs.Find(id);
+            var staff = await _staffService.GetStaffByIdAsync(id);
 
             if (staff == null)
-                return NotFound();
+                return NotFound("Staff not found");
 
             return Ok(staff);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateStaff(int id, Staff updatedStaff)
+        public async Task<IActionResult> UpdateStaff(int id, [FromBody] UpdateStaffDto dto)
         {
-            if (id != updatedStaff.Id)
-                return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var staff = _context.Staffs.Find(id);
+            var updatedStaff = await _staffService.UpdateStaffAsync(id, dto);
 
-            if (staff == null)
-                return NotFound();
+            if (updatedStaff == null)
+                return NotFound("Staff not found");
 
-            staff.FullName = updatedStaff.FullName;
-            staff.Email = updatedStaff.Email;
-            staff.Password = updatedStaff.Password;
-            staff.Role = updatedStaff.Role;
-            staff.PhoneNumber = updatedStaff.PhoneNumber;
-
-            _context.SaveChanges();
-
-            return Ok(staff);
+            return Ok(updatedStaff);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteStaff(int id)
+        public async Task<IActionResult> DeleteStaff(int id)
         {
-            var staff = _context.Staffs.Find(id);
+            var deleted = await _staffService.DeleteStaffAsync(id);
 
-            if (staff == null)
-                return NotFound();
+            if (!deleted)
+                return NotFound("Staff not found");
 
-            _context.Staffs.Remove(staff);
-            _context.SaveChanges();
-
-            return Ok("Deleted successfully");
+            return Ok("Staff deleted successfully");
         }
     }
 }
