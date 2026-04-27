@@ -20,7 +20,7 @@ namespace VehicleManagementSystem.Domain.Models
 
         [Required]
         public int Year { get; set; }
-
+        //uPDATED ONE 
         [Required]
         [StringLength(30)]
         public string Color { get; set; } = string.Empty;

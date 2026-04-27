@@ -19,7 +19,7 @@ namespace VehicleManagementSystem.Domain.Models
         [Required]
         [StringLength(100)]
         public string Password { get; set; } = string.Empty;
-
+        //UPDATED ONE 
         [Required]
         [RegularExpression("Admin|Staff", ErrorMessage = "Role must be either Admin or Staff")]
         public string Role { get; set; } = "Staff";
