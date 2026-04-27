@@ -23,4 +23,8 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VehicleManagementSystem.Domain\VehicleManagementSystem.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
