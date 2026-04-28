@@ -1,0 +1,6 @@
+@Autolaya_HostAddress = http://localhost:5056
+
+GET {{Autolaya_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

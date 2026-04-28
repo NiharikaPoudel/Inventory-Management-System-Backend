@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="../AutoLaya.UI/autolaya.ui.client/autolaya.ui.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="../AutoLaya.UI/AutoLaya.UI.Server/AutoLaya.UI.Server.csproj" Id="8030daa8-427a-4909-839c-cc0ade84c261" />
+  <Project Path="Autolaya.csproj" />
+</Solution>
