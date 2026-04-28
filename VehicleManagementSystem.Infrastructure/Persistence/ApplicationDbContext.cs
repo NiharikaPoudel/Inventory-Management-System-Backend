@@ -14,5 +14,7 @@ namespace VehicleManagementSystem.Infrastructure.Persistence
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
+
+        public DbSet<Sale> Sales { get; set; }
     }
 }
