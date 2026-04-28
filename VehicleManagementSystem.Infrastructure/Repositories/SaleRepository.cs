@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using VehicleManagementSystem.Application.Interfaces.IRepositories;
+﻿using VehicleManagementSystem.Application.Interfaces.IRepositories;
 using VehicleManagementSystem.Domain.Models;
 using VehicleManagementSystem.Infrastructure.Persistence;
 
@@ -14,21 +13,18 @@ namespace VehicleManagementSystem.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Sale> AddSaleAsync(Sale sale)
-        {
-            _context.Sales.Add(sale);
-            await _context.SaveChangesAsync();
-            return sale;
-        }
+        // Stub implementations to satisfy the compiler
+        public Task<IEnumerable<Sale>> GetSalesByCustomerAsync(int customerId)
+            => throw new NotImplementedException();
 
-        public async Task<List<Sale>> GetAllSalesAsync()
-        {
-            return await _context.Sales.ToListAsync();
-        }
+        public Task<Sale?> GetSaleByIdAsync(int id)
+            => throw new NotImplementedException();
 
-        public async Task<Sale?> GetSaleByIdAsync(int id)
-        {
-            return await _context.Sales.FindAsync(id);
-        }
+        // If you still have these from the previous interface version, add them too:
+        public Task<Sale> AddSaleAsync(Sale sale)
+            => throw new NotImplementedException();
+
+        public Task<IEnumerable<Sale>> GetAllSalesAsync()
+            => throw new NotImplementedException();
     }
 }

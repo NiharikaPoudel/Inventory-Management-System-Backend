@@ -14,6 +14,7 @@ namespace VehicleManagementSystem.Infrastructure.Services
             _repository = repository;
         }
 
+        // --- Feature: Registration with Vehicle (The missing piece) ---
         public async Task<CustomerResponseDto> RegisterCustomerWithVehicleAsync(CreateCustomerWithVehicleDto dto)
         {
             var customer = new Customer
@@ -61,12 +62,41 @@ namespace VehicleManagementSystem.Infrastructure.Services
             };
         }
 
+        // --- Feature 12: Individual Registration ---
+        public async Task<CustomerProfileDto> RegisterCustomerAsync(RegisterCustomerDto dto)
+        {
+            var customer = new Customer
+            {
+                FullName = dto.FullName,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                Address = dto.Address
+            };
+
+            var created = await _repository.AddCustomerAsync(customer);
+            return MapToProfileDto(created);
+        }
+
+        // --- Feature 12: Edit Profile ---
+        public async Task<CustomerProfileDto?> UpdateProfileAsync(int customerId, UpdateProfileDto dto)
+        {
+            var customer = await _repository.GetByIdAsync(customerId);
+            if (customer == null) return null;
+
+            customer.FullName = dto.FullName;
+            customer.Email = dto.Email;
+            customer.Phone = dto.Phone;
+            customer.Address = dto.Address;
+
+            var updated = await _repository.UpdateCustomerAsync(customer);
+            return MapToProfileDto(updated);
+        }
+
+        // --- Feature 8: Detail view with vehicles ---
         public async Task<CustomerResponseDto?> GetCustomerWithVehiclesAsync(int customerId)
         {
             var customer = await _repository.GetCustomerWithVehiclesAsync(customerId);
-
-            if (customer == null)
-                return null;
+            if (customer == null) return null;
 
             return new CustomerResponseDto
             {
@@ -87,5 +117,24 @@ namespace VehicleManagementSystem.Infrastructure.Services
                 }).ToList()
             };
         }
+
+        // --- Feature 8: Profile only ---
+        public async Task<CustomerProfileDto?> GetCustomerProfileAsync(int customerId)
+        {
+            var customer = await _repository.GetByIdAsync(customerId);
+            if (customer == null) return null;
+
+            return MapToProfileDto(customer);
+        }
+
+        private static CustomerProfileDto MapToProfileDto(Customer customer) => new()
+        {
+            Id = customer.Id,
+            FullName = customer.FullName,
+            Email = customer.Email,
+            Phone = customer.Phone,
+            Address = customer.Address,
+            RegisteredAt = customer.RegisteredAt
+        };
     }
 }
