@@ -17,5 +17,7 @@ namespace VehicleManagementSystem.Infrastructure.Persistence
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<Part> Parts { get; set; }
+
+        public DbSet<PurchaseInvoice> PurchaseInvoices { get; set; }
     }
 }

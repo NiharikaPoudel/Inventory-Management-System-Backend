@@ -26,7 +26,6 @@ namespace VehicleManagementSystem.Infrastructure.Services
                 SellingPrice = dto.SellingPrice,
                 VendorId = dto.VendorId
             };
-
             var created = await _repository.AddAsync(part);
             return MapToDto(created);
         }
@@ -40,10 +39,7 @@ namespace VehicleManagementSystem.Infrastructure.Services
         public async Task<PartResponseDto?> GetPartByIdAsync(int id)
         {
             var part = await _repository.GetByIdAsync(id);
-
-            if (part == null)
-                return null;
-
+            if (part == null) return null;
             return MapToDto(part);
         }
 
@@ -59,12 +55,8 @@ namespace VehicleManagementSystem.Infrastructure.Services
                 SellingPrice = dto.SellingPrice,
                 VendorId = dto.VendorId
             };
-
             var updated = await _repository.UpdateAsync(id, part);
-
-            if (updated == null)
-                return null;
-
+            if (updated == null) return null;
             return MapToDto(updated);
         }
 
@@ -73,20 +65,23 @@ namespace VehicleManagementSystem.Infrastructure.Services
             return await _repository.DeleteAsync(id);
         }
 
-        private static PartResponseDto MapToDto(Part part)
+        public async Task<List<PartResponseDto>> GetPartsByVendorAsync(int vendorId)
         {
-            return new PartResponseDto
-            {
-                Id = part.Id,
-                PartName = part.PartName,
-                PartNumber = part.PartNumber,
-                Category = part.Category,
-                Quantity = part.Quantity,
-                PurchasePrice = part.PurchasePrice,
-                SellingPrice = part.SellingPrice,
-                VendorId = part.VendorId,
-                CreatedAt = part.CreatedAt
-            };
+            var parts = await _repository.GetByVendorIdAsync(vendorId);
+            return parts.Select(MapToDto).ToList();
         }
+
+        private static PartResponseDto MapToDto(Part part) => new()
+        {
+            Id = part.Id,
+            PartName = part.PartName,
+            PartNumber = part.PartNumber,
+            Category = part.Category,
+            Quantity = part.Quantity,
+            PurchasePrice = part.PurchasePrice,
+            SellingPrice = part.SellingPrice,
+            VendorId = part.VendorId,
+            CreatedAt = part.CreatedAt
+        };
     }
 }

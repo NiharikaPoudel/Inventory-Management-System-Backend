@@ -17,9 +17,7 @@ namespace VehicleManagementSystem.Infrastructure.Repositories
         public async Task<Part> AddAsync(Part part)
         {
             _context.Parts.Add(part);
-
             await _context.SaveChangesAsync();
-
             return part;
         }
 
@@ -33,12 +31,16 @@ namespace VehicleManagementSystem.Infrastructure.Repositories
             return await _context.Parts.FindAsync(id);
         }
 
+        public async Task<Part?> GetByNameAsync(string partName)
+        {
+            return await _context.Parts
+                .FirstOrDefaultAsync(p => p.PartName.ToLower() == partName.ToLower());
+        }
+
         public async Task<Part?> UpdateAsync(int id, Part updatedPart)
         {
             var existingPart = await _context.Parts.FindAsync(id);
-
-            if (existingPart == null)
-                return null;
+            if (existingPart == null) return null;
 
             existingPart.PartName = updatedPart.PartName;
             existingPart.PartNumber = updatedPart.PartNumber;
@@ -49,22 +51,23 @@ namespace VehicleManagementSystem.Infrastructure.Repositories
             existingPart.VendorId = updatedPart.VendorId;
 
             await _context.SaveChangesAsync();
-
             return existingPart;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             var part = await _context.Parts.FindAsync(id);
-
-            if (part == null)
-                return false;
-
+            if (part == null) return false;
             _context.Parts.Remove(part);
-
             await _context.SaveChangesAsync();
-
             return true;
+        }
+
+        public async Task<List<Part>> GetByVendorIdAsync(int vendorId)
+        {
+            return await _context.Parts
+                .Where(p => p.VendorId == vendorId)
+                .ToListAsync();
         }
     }
 }

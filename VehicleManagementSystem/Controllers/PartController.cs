@@ -15,64 +15,51 @@ namespace VehicleManagementSystem.Controllers
             _service = service;
         }
 
-        // CREATE PART
         [HttpPost]
         public async Task<IActionResult> CreatePart(CreatePartDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _service.CreatePartAsync(dto);
-
             return Ok(result);
         }
 
-        // GET ALL PARTS
         [HttpGet]
         public async Task<IActionResult> GetAllParts()
         {
             var result = await _service.GetAllPartsAsync();
-
             return Ok(result);
         }
 
-        // GET PART BY ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPartById(int id)
         {
             var result = await _service.GetPartByIdAsync(id);
-
-            if (result == null)
-                return NotFound("Part not found.");
-
+            if (result == null) return NotFound("Part not found.");
             return Ok(result);
         }
 
-        // UPDATE PART
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePart(int id, UpdatePartDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _service.UpdatePartAsync(id, dto);
-
-            if (result == null)
-                return NotFound("Part not found.");
-
+            if (result == null) return NotFound("Part not found.");
             return Ok(result);
         }
 
-        // DELETE PART
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePart(int id)
         {
             var result = await _service.DeletePartAsync(id);
-
-            if (!result)
-                return NotFound("Part not found.");
-
+            if (!result) return NotFound("Part not found.");
             return Ok("Part deleted successfully.");
+        }
+
+        [HttpGet("by-vendor/{vendorId}")]
+        public async Task<IActionResult> GetPartsByVendor(int vendorId)
+        {
+            var result = await _service.GetPartsByVendorAsync(vendorId);
+            return Ok(result);
         }
     }
 }

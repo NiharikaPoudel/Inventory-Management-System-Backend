@@ -52,6 +52,8 @@ builder.Services.AddScoped<IVendorRepository, VendorRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<IPartRepository, PartRepository>();
+builder.Services.AddScoped<IPurchaseInvoiceRepository, PurchaseInvoiceRepository>();
+
 
 // Services
 builder.Services.AddScoped<IStaffService, StaffService>();
@@ -63,6 +65,7 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ILowStockService, LowStockService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ICreditReminderService, CreditReminderService>();
+builder.Services.AddScoped<IPurchaseInvoiceService, PurchaseInvoiceService>();
 
 // CORS for React frontend
 builder.Services.AddCors(options =>

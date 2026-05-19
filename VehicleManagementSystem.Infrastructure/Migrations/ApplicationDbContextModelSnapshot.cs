@@ -258,7 +258,7 @@ namespace VehicleManagementSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("VehicleManagementSystem.Domain.Models.Part", b =>
@@ -300,7 +300,7 @@ namespace VehicleManagementSystem.Infrastructure.Migrations
 
                     b.HasIndex("VendorId");
 
-                    b.ToTable("Parts");
+                    b.ToTable("Parts", (string)null);
                 });
 
             modelBuilder.Entity("VehicleManagementSystem.Domain.Models.Sale", b =>
@@ -345,7 +345,7 @@ namespace VehicleManagementSystem.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Sales");
+                    b.ToTable("Sales", (string)null);
                 });
 
             modelBuilder.Entity("VehicleManagementSystem.Domain.Models.Staff", b =>
@@ -385,7 +385,7 @@ namespace VehicleManagementSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Staffs");
+                    b.ToTable("Staffs", (string)null);
                 });
 
             modelBuilder.Entity("VehicleManagementSystem.Domain.Models.Vehicle", b =>
@@ -426,7 +426,7 @@ namespace VehicleManagementSystem.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Vehicles");
+                    b.ToTable("Vehicles", (string)null);
                 });
 
             modelBuilder.Entity("VehicleManagementSystem.Domain.Models.Vendor", b =>
@@ -467,7 +467,7 @@ namespace VehicleManagementSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vendors");
+                    b.ToTable("Vendors", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
