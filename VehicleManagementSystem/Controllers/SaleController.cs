@@ -15,13 +15,18 @@ namespace VehicleManagementSystem.Controllers
             _service = service;
         }
 
+        // POST: create sale
         [HttpPost]
-        public async Task<IActionResult> CreateSale(CreateSaleDto dto)
+        public async Task<IActionResult> CreateSale([FromBody] CreateSaleDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _service.CreateSaleAsync(dto);
             return Ok(result);
         }
 
+        // GET: all sales
         [HttpGet]
         public async Task<IActionResult> GetAllSales()
         {
@@ -29,14 +34,37 @@ namespace VehicleManagementSystem.Controllers
             return Ok(result);
         }
 
+        // GET: single sale
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSaleById(int id)
         {
             var result = await _service.GetSaleByIdAsync(id);
-
             if (result == null)
                 return NotFound("Sale not found");
+            return Ok(result);
+        }
 
+        // GET: regular customers
+        [HttpGet("reports/regulars")]
+        public async Task<IActionResult> GetRegulars()
+        {
+            var result = await _service.GetRegularCustomersAsync();
+            return Ok(result);
+        }
+
+        // GET: high spenders
+        [HttpGet("reports/high-spenders")]
+        public async Task<IActionResult> GetHighSpenders()
+        {
+            var result = await _service.GetHighSpendersAsync();
+            return Ok(result);
+        }
+
+        // GET: pending credits
+        [HttpGet("reports/pending-credits")]
+        public async Task<IActionResult> GetPendingCredits()
+        {
+            var result = await _service.GetPendingCreditCustomersAsync();
             return Ok(result);
         }
     }

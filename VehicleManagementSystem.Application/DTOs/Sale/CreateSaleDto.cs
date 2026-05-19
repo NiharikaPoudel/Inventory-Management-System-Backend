@@ -9,5 +9,7 @@ namespace VehicleManagementSystem.DTOs.Sale
 
         [Required]
         public decimal TotalAmount { get; set; }
+
+        public string Status { get; set; } = "paid";
     }
 }

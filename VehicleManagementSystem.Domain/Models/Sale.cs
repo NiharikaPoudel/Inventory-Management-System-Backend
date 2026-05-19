@@ -23,6 +23,8 @@ namespace VehicleManagementSystem.Domain.Models
 
         public decimal RemainingAmount { get; set; }
 
+        public string Status { get; set; } = "paid";
+
         [Column("DueDate")]
         public DateTime? CreditDueDate { get; set; }
 

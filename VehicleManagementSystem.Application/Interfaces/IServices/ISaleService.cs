@@ -9,5 +9,11 @@ namespace VehicleManagementSystem.Application.Interfaces.IServices
         Task<List<SaleResponseDto>> GetAllSalesAsync();
 
         Task<SaleResponseDto?> GetSaleByIdAsync(int id);
+
+        Task<List<CustomerReportDto>> GetRegularCustomersAsync();
+
+        Task<List<CustomerReportDto>> GetHighSpendersAsync();
+
+        Task<List<CustomerReportDto>> GetPendingCreditCustomersAsync();
     }
 }

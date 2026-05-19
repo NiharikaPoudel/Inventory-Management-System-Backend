@@ -28,15 +28,24 @@ namespace VehicleManagementSystem.Infrastructure.Services
 
             decimal finalAmount = dto.TotalAmount - discount;
 
+            var status = string.IsNullOrWhiteSpace(dto.Status) ? "paid" : dto.Status;
+            var paidAmount = status.Equals("paid", StringComparison.OrdinalIgnoreCase)
+                ? finalAmount
+                : 0m;
+            var remainingAmount = status.Equals("paid", StringComparison.OrdinalIgnoreCase)
+                ? 0m
+                : finalAmount;
+
             var sale = new Sale
             {
                 CustomerId = dto.CustomerId,
                 TotalAmount = dto.TotalAmount,
                 DiscountAmount = discount,
                 FinalAmount = finalAmount,
-                PaidAmount = 0m,
-                RemainingAmount = finalAmount,
-                CreditDueDate = DateTime.UtcNow.Date
+                PaidAmount = paidAmount,
+                RemainingAmount = remainingAmount,
+                CreditDueDate = DateTime.UtcNow.Date,
+                Status = status
             };
 
             var created = await _repository.AddSaleAsync(sale);
@@ -49,6 +58,7 @@ namespace VehicleManagementSystem.Infrastructure.Services
                 DiscountAmount = created.DiscountAmount,
                 FinalAmount = created.FinalAmount,
                 SaleDate = created.SaleDate,
+                Status = created.Status,
                 Message = message
             };
         }
@@ -61,10 +71,12 @@ namespace VehicleManagementSystem.Infrastructure.Services
             {
                 Id = s.Id,
                 CustomerId = s.CustomerId,
+                CustomerName = s.Customer?.FullName ?? string.Empty,
                 TotalAmount = s.TotalAmount,
                 DiscountAmount = s.DiscountAmount,
                 FinalAmount = s.FinalAmount,
                 SaleDate = s.SaleDate,
+                Status = s.Status,
                 Message = s.DiscountAmount > 0 ? "Discount Applied" : "No Discount"
             }).ToList();
         }
@@ -79,12 +91,55 @@ namespace VehicleManagementSystem.Infrastructure.Services
             {
                 Id = s.Id,
                 CustomerId = s.CustomerId,
+                CustomerName = s.Customer?.FullName ?? string.Empty,
                 TotalAmount = s.TotalAmount,
                 DiscountAmount = s.DiscountAmount,
                 FinalAmount = s.FinalAmount,
                 SaleDate = s.SaleDate,
+                Status = s.Status,
                 Message = s.DiscountAmount > 0 ? "Discount Applied" : "No Discount"
             };
+        }
+
+        public async Task<List<CustomerReportDto>> GetRegularCustomersAsync()
+        {
+            return await _repository.GetRegularCustomersAsync();
+        }
+
+        public async Task<List<CustomerReportDto>> GetHighSpendersAsync()
+        {
+            return await _repository.GetHighSpendersAsync();
+        }
+
+        public async Task<List<CustomerReportDto>> GetPendingCreditCustomersAsync()
+        {
+            return await _repository.GetPendingCreditCustomersAsync();
+        }
+
+        private static IEnumerable<CustomerReportDto> BuildCustomerReports(IEnumerable<Sale> sales)
+        {
+            return sales
+                .Where(s => s.Customer != null)
+                .GroupBy(s => s.CustomerId)
+                .Select(group =>
+                {
+                    var sample = group.First();
+                    var pendingCredit = group.Sum(s =>
+                        s.RemainingAmount > 0
+                            ? s.RemainingAmount
+                            : Math.Max(s.FinalAmount - s.PaidAmount, 0));
+
+                    return new CustomerReportDto
+                    {
+                        CustomerId = group.Key,
+                        FullName = sample.Customer?.FullName ?? string.Empty,
+                        Phone = sample.Customer?.Phone ?? string.Empty,
+                        Email = sample.Customer?.Email ?? string.Empty,
+                        TotalVisits = group.Count(),
+                        TotalSpent = group.Sum(s => s.FinalAmount),
+                        PendingCreditAmount = pendingCredit
+                    };
+                });
         }
     }
 }

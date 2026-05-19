@@ -1,4 +1,5 @@
 ﻿using VehicleManagementSystem.Domain.Models;
+using VehicleManagementSystem.DTOs.Sale;
 
 namespace VehicleManagementSystem.Application.Interfaces.IRepositories
 {
@@ -9,5 +10,11 @@ namespace VehicleManagementSystem.Application.Interfaces.IRepositories
         Task<List<Sale>> GetAllSalesAsync();
 
         Task<Sale?> GetSaleByIdAsync(int id);
+
+        Task<List<CustomerReportDto>> GetRegularCustomersAsync();
+
+        Task<List<CustomerReportDto>> GetHighSpendersAsync();
+
+        Task<List<CustomerReportDto>> GetPendingCreditCustomersAsync();
     }
 }
