@@ -57,4 +57,8 @@
     <ProjectReference Include="..\VehicleManagementSystem.Domain\VehicleManagementSystem.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\NewFolder\" />
+  </ItemGroup>
+
 </Project>

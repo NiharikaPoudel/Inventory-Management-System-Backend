@@ -33,7 +33,10 @@ namespace VehicleManagementSystem.Infrastructure.Services
                 CustomerId = dto.CustomerId,
                 TotalAmount = dto.TotalAmount,
                 DiscountAmount = discount,
-                FinalAmount = finalAmount
+                FinalAmount = finalAmount,
+                PaidAmount = 0m,
+                RemainingAmount = finalAmount,
+                CreditDueDate = DateTime.UtcNow.Date
             };
 
             var created = await _repository.AddSaleAsync(sale);
