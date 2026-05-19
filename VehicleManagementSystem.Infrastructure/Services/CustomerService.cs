@@ -127,6 +127,50 @@ namespace VehicleManagementSystem.Infrastructure.Services
             return MapToProfileDto(customer);
         }
 
+        // ─── NEW FEATURES: 4 Missing Methods ─────────────────────────────────
+
+        // Feature: Create Booking
+        public async Task<int> CreateBookingAsync(CreateBookingDto dto)
+        {
+            // TODO: Add booking logic here
+            // For now, returning a dummy ID
+            // You'll need to create Booking entity and repository method
+            await Task.CompletedTask;
+            return 1; // Placeholder booking ID
+        }
+
+        // Feature: Create Part Request
+        public async Task<int> CreatePartRequestAsync(CreatePartRequestDto dto)
+        {
+            // TODO: Add part request logic here
+            // For now, returning a dummy ID
+            // You'll need to create PartRequest entity and repository method
+            await Task.CompletedTask;
+            return 1; // Placeholder part request ID
+        }
+
+        // Feature: Submit Review
+        public async Task<bool> SubmitReviewAsync(SubmitReviewDto dto)
+        {
+            // TODO: Add review submission logic here
+            // For now, returning true
+            // You'll need to create Review entity and repository method
+            await Task.CompletedTask;
+            return true; // Placeholder success
+        }
+
+        // Feature: Get Featured Vendors (Homepage)
+        public async Task<IEnumerable<FeaturedVendorDto>> GetFeaturedVendorsAsync()
+        {
+            // TODO: Add logic to fetch vendors with rating >= 4.5
+            // For now, returning empty list
+            // You'll need to add this method to your vendor repository
+            await Task.CompletedTask;
+            return new List<FeaturedVendorDto>(); // Placeholder empty list
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+
         private static CustomerProfileDto MapToProfileDto(Customer customer) => new()
         {
             Id = customer.Id,
